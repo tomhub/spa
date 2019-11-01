@@ -1,2 +1,4 @@
 # spa
-Statistical Programming Area (SAS/WorldProgramming)
+Statistical Programming Area (for SAS and/or WorldProgramming)
+
+This is intended for individual projects in mind.
