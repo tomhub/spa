@@ -1,0 +1,8 @@
+# exclude WPS project file
+/.project
+
+# exlude test programs
+_wip*.sas
+*.log
+*.bck
+
