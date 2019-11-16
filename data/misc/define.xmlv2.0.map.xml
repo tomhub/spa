@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+********************************************************************************
+Copyright (c) 2019 Tomas Demčenko
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+********************************************************************************
+-->
+<!-- This is a map to import define.xml specifications for datasets and variables -->
+<!-- Notes:
+1. TranslatedText is selected where attributed xml:lang="en" or xml:lang is not set
+
+-->
+<SXLEMAP name="SXLEMap" version="2.1" description="Read define.xml v2.0 data">
+  <!-- Namespaces -->
+  <NAMESPACES count="5">
+    <NS id="1" prefix="">http://www.cdisc.org/ns/odm/v1.3</NS>
+    <NS id="2" prefix="def">http://www.cdisc.org/ns/def/v2.0</NS>
+    <NS id="3" prefix="xlink">http://www.w3.org/1999/xlink</NS>
+    <NS id="4" prefix="arm">http://www.cdisc.org/ns/arm/v1.0</NS>
+    <NS id="5" prefix="xml">http://www.w3.org/XML/1998/namespace</NS>
+  </NAMESPACES>
+  
+  <TABLE name="DATASETS" description="List of Datasets (ItemGroupDef)">
+    <TABLE-PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef</TABLE-PATH>
+    <COLUMN class="ORDINAL" name="ORDER" retain="YES">
+      <DESCRIPTION>Order of datasets</DESCRIPTION>
+      <INCREMENT-PATH beginend="BEGIN" syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef</INCREMENT-PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>integer</DATATYPE>
+    </COLUMN>
+<!-- -->
+    <COLUMN name="OID">
+      <DESCRIPTION>ItemGroup OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@OID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>200</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="NAME">
+      <DESCRIPTION>Dataset Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>32</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="SASDATASETNAME">
+      <DESCRIPTION>SAS Dataset Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@SASDatasetName</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>32</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="REPEATING">
+      <DESCRIPTION>Repeating?</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@Repeating</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ISREFERENCEDATA">
+      <DESCRIPTION>Is Reference Data?</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@IsReferenceData</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="Purpose">
+      <DESCRIPTION>Purpose</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@Purpose</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="STRUCTURE">
+      <DESCRIPTION>def:Structure</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@{2}Structure</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CLASS">
+      <DESCRIPTION>def:Class</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@{2}Class</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ARCHIVELOC">
+      <DESCRIPTION>def:ArchiveLocationID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@{2}ArchiveLocationID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="DSLABELEN">
+      <DESCRIPTION>Dataset Label EN</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/{1}Description/{1}TranslatedText[@{5}lang="en" | not(@{5}lang)]</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+  </TABLE>
+  
+  
+  <!-- Items in the datasets-->
+  <TABLE name="DSITEMS" description="List of Datasets (ItemGroupDef->ItemRef)">
+    <TABLE-PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/{1}ItemRef</TABLE-PATH>
+<!-- -->
+    <COLUMN name="OID" retain="YES">
+      <DESCRIPTION>ItemGroup OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/@OID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>200</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ITEMOID">
+      <DESCRIPTION>Item OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/{1}ItemRef/@ItemOID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>200</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ORDERNUMBER">
+      <DESCRIPTION>Variable Order</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/{1}ItemRef/@OrderNumber</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="MANDATORY">
+      <DESCRIPTION>Mandatory</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/{1}ItemRef/@Mandatory</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="KEYSEQUENCE">
+      <DESCRIPTION>Key Sequence</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemGroupDef/{1}ItemRef/@KeySequence</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+  </TABLE>
+  
+  <!-- Items-->
+  <TABLE name="ItemDefs" description="List of ItemDefs">
+    <TABLE-PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef</TABLE-PATH>
+<!-- -->
+    <COLUMN name="OID" retain="YES">
+      <DESCRIPTION>Item OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@OID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="NAME">
+      <DESCRIPTION>Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="DataType">
+      <DESCRIPTION>Data Type</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@DataType</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="Length">
+      <DESCRIPTION>Length</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@Length</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="SignificantDigits">
+      <DESCRIPTION>Significant Digits</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@SignificantDigits</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="SASFieldName">
+      <DESCRIPTION>SAS Field Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@SASFieldName</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="def:DisplayFormat">
+      <DESCRIPTION>SAS Field Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/@{2}DisplayFormat</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>64</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ItemDescriptionEN">
+      <DESCRIPTION>Item Description EN</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/{1}Description/{1}TranslatedText[@{5}lang="en" | not(@{5}lang)]</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListOID">
+      <DESCRIPTION>Codelist OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/{1}CodeListRef/@CodeListOID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ValueListOID">
+      <DESCRIPTION>Value List OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/{2}ValueListRef/@ValueListOID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="Origin">
+      <DESCRIPTION>def:Origin</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/{2}Origin/@Type</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="OriginDescriptionEN">
+      <DESCRIPTION>Origin Description EN</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ItemDef/{2}Origin/{1}Description/{1}TranslatedText[@{5}lang="en" | not(@{5}lang)]</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+  </TABLE>
+
+  <!-- Codelists-->
+  <TABLE name="CODELISTS" description="List of CodeList->CodeListItem">
+    <TABLE-PATH syntax="XPathENR">
+    <!-- Note: EnumeratedItem and CodeListItem should not be mixed in CodeList -->
+    <!-- Note: it seems currently a path can only be static as operator OR is not implemented? -->
+    <!-- Therefore, EnumeratedItem and CodeListItem will be on separate tables -->
+      /{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem
+    </TABLE-PATH>
+<!-- -->
+    <COLUMN name="CodeListOID" retain="YES">
+      <DESCRIPTION>CodeList OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@OID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+    <COLUMN name="CodeListType" retain="YES">
+      <DESCRIPTION>CodeList Type</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/*.</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+    <COLUMN name="Name" retain="YES">
+      <DESCRIPTION>CodeList Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="DataType" retain="YES">
+      <DESCRIPTION>CodeList DataType</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@DataType</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <!-- as per v2.1, allowed values: text, float, Integer -->
+      <LENGTH>7</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- v2.1 -->
+    <COLUMN name="IsNonStandard" retain="YES">
+      <DESCRIPTION>CodeList Contains Non-Standard Items</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@{2}IsNonStandard</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- v2.1 -->
+    <COLUMN name="StandardOID" retain="YES">
+      <DESCRIPTION>CodeList Standard OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@{2}StandardOID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListContext" retain="YES">
+      <DESCRIPTION>CodeList Alias Context</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}Alias/@Context</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListName" retain="YES">
+      <DESCRIPTION>CodeList Alias Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}Alias/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemName">
+      <DESCRIPTION>CodeList Item Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/@CodedValue</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemRank">
+      <DESCRIPTION>CodeList Item Rank</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/@Rank</PATH>
+      <TYPE>Numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemOrderNumber">
+      <DESCRIPTION>CodeList Item Order Number</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/@OrderNumber</PATH>
+      <TYPE>Numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemdefExtendedValue">
+      <DESCRIPTION>CodeList Item def:ExtendedValue</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/@{2}ExtendedValue</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemDecodeEn">
+      <DESCRIPTION>CodeList Item Decode (EN)</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/{1}Decode/{1}TranslatedText[@{5}lang="en" | not(@{5}lang)]</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>4096</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemContext">
+      <DESCRIPTION>CodeList Item Alias Context</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/{1}Alias/@Context</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemAliasName">
+      <DESCRIPTION>CodeList Item Alias Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}CodeListItem/{1}Alias/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+  </TABLE>
+  <!-- Codelists EnumeratedItems-->
+  <TABLE name="CODELISTSENUM" description="List of CodeList->EnumeratedItem">
+    <TABLE-PATH syntax="XPathENR">
+    <!-- Note: EnumeratedItem and CodeListItem should not be mixed in CodeList -->
+    <!-- Note: it seems currently a path can only be static as operator OR is not implemented? -->
+    <!-- Therefore, EnumeratedItem and CodeListItem will be on separate tables -->
+      /{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem
+    </TABLE-PATH>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListOID" retain="YES">
+      <DESCRIPTION>CodeList OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@OID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="Name" retain="YES">
+      <DESCRIPTION>CodeList Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="DataType" retain="YES">
+      <DESCRIPTION>CodeList DataType</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@DataType</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <!-- as per v2.1, allowed values: text, float, Integer -->
+      <LENGTH>7</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- v2.1 -->
+    <COLUMN name="IsNonStandard" retain="YES">
+      <DESCRIPTION>CodeList Contains Non-Standard Items</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@{2}IsNonStandard</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- v2.1 -->
+    <COLUMN name="StandardOID" retain="YES">
+      <DESCRIPTION>CodeList Standard OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/@{2}StandardOID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListContext" retain="YES">
+      <DESCRIPTION>CodeList Alias Context</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}Alias/@Context</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListName" retain="YES">
+      <DESCRIPTION>CodeList Alias Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}Alias/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemName">
+      <DESCRIPTION>CodeList Item Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem/@CodedValue</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemRank">
+      <DESCRIPTION>CodeList Item Rank</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem/@Rank</PATH>
+      <TYPE>Numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemOrderNumber">
+      <DESCRIPTION>CodeList Item Order Number</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem/@OrderNumber</PATH>
+      <TYPE>Numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemdefExtendedValue">
+      <DESCRIPTION>CodeList Item def:ExtendedValue</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem/@{2}ExtendedValue</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemContext">
+      <DESCRIPTION>CodeList Item Alias Context</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem/{1}Alias/@Context</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="CodeListItemAliasName">
+      <DESCRIPTION>CodeList Item Alias Name</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}CodeList/{1}EnumeratedItem/{1}Alias/@Name</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>2048</LENGTH>
+    </COLUMN>
+<!-- -->
+  </TABLE>
+
+
+  <!-- def:ValueListDef-->
+  <TABLE name="ValueListDef" description="List of VLMs">
+    <TABLE-PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{2}ValueListDef/{1}ItemRef</TABLE-PATH>
+<!-- -->
+    <COLUMN name="VLMOID" retain="YES">
+      <DESCRIPTION>Value List Metadata OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ValueListDef/@OID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>200</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ITEMOID">
+      <DESCRIPTION>Item OID</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ValueListDef/{1}ItemRef/@ItemOID</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>200</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ITEMORDERNUMBER">
+      <DESCRIPTION>Item Order</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ValueListDef/{1}ItemRef/@OrderNumber</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ITEMMANDATORY">
+      <DESCRIPTION>Mandatory</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ValueListDef/{1}ItemRef/@Mandatory</PATH>
+      <TYPE>character</TYPE>
+      <DATATYPE>string</DATATYPE>
+      <LENGTH>3</LENGTH>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="KEYSEQUENCE">
+      <DESCRIPTION>Key Sequence</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ValueListDef/{1}ItemRef/@KeySequence</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+<!-- -->
+    <COLUMN name="ROLE">
+      <DESCRIPTION>Key Sequence</DESCRIPTION>
+      <PATH syntax="XPathENR">/{1}ODM/{1}Study/{1}MetaDataVersion/{1}ValueListDef/{1}ItemRef/@KeySequence</PATH>
+      <TYPE>numeric</TYPE>
+      <DATATYPE>float</DATATYPE>
+    </COLUMN>
+<!-- -->
+  </TABLE>
+</SXLEMAP>
