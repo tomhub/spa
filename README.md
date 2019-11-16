@@ -1,12 +1,15 @@
 # spa
-Statistical Programming Area for SAS Language
+SAS Programming Area (for SAS Language)
 
-This is intended for individual projects.
+This is intended for blank, single projects.
 
-## 
+## Usage:
+* Clone repository
+* Update programs/macros/setup.sas (and other setup*.sas files as necessary for the project)
+* data/misc/define.xmlv2.0.map.xml - an XML map to access define.xml v2.0 data through libname xml engine
+ 
 
-
-# Playground rules (which are nice to follow, but :
+# Playground rules (which are nice to follow, but..):
   * 4 spaces to indent, UTF-8 encoding (no tabs)
   * No code obscuring, hiding in the log.
   * No compiled macros without source code.
@@ -18,6 +21,8 @@ This is intended for individual projects.
     * WARNING: (use put 'WAR' 'NING: ' or %put %sysfunc(cats(WAR,NING:)) for correct program path, but most likely not expected, or deviated from expected
     * NOTICE: (use put 'NOT' 'ICE: ' or %put %sysfunc(cats(NOT,ICE:)) for debug or information
     * NOTE: only by SAS/WPS itself.
+  * Nice to have:
+    * When not running in batch, produce all outputs into "work", so that actual outputs aren't modified until the program is batch submitted and log files are saved
 
 # TODO:
   * Read define.xml to get dataset/variable/codelist metadata ondemand
