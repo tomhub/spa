@@ -63,7 +63,7 @@ md*
       Probably, does not guarantee privacy, security, nor cleaning up.
     ;
 
-    %let g_path_tmp = %sysfunc(pathname(work));
+    %let g_path_tmp = %sysfunc(pathname(work, l));
     
     %* root path (g_path_root) - location and name of program being executed;
     
@@ -78,7 +78,7 @@ md*
         ;
         %local fr rc libname;
         %let rc = %sysfunc(libname(_setup, ));
-        %let g_path_root = %sysfunc(pathname(_setup));
+        %let g_path_root = %sysfunc(pathname(_setup, l));
         %let rc = %sysfunc(libname(_setup));
     %end;
     
