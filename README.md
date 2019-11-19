@@ -18,8 +18,8 @@ This is intended for blank, single projects.
   * Macros to not change options (unless, user expects macro to be changing options, i.e. data processing or reporting macros should not change mprint mlogic etc. options)
   * User defined log messages:
     * ERROR: (use put 'ER' 'ROR: ' or %put %sysfunc(cats(ER,ROR:)) for unexpected program path etc or detected issue)
-    * WARNING: (use put 'WAR' 'NING: ' or %put %sysfunc(cats(WAR,NING:)) for correct program path, but most likely not expected, or deviated from expected
-    * NOTICE: (use put 'NOT' 'ICE: ' or %put %sysfunc(cats(NOT,ICE:)) for debug or information
+    * WARNING: (use put 'WA' 'RNING: ' or %put %sysfunc(cats(WA,RNING:)) for correct program path, but most likely not expected, or deviated from expected
+    * NOTICE: (use put 'NO' 'TICE: ' or %put %sysfunc(cats(NO,TICE:)) for debug or information
     * NOTE: only by SAS/WPS itself.
   * Nice to have:
     * When not running in batch, produce all outputs into "work", so that actual outputs aren't modified until the program is batch submitted and log files are saved
