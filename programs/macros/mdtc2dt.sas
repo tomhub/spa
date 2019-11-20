@@ -35,6 +35,8 @@ md*
     %* seems to be based on locale/os;
     %if %sysevalf(%superq(dtc)=,boolean) %then %do;
         %* nothing to do. *;
+        %if %sysevalf(%superq(format)=,boolean) %then .;
+        %else %str( );
         %return;
     %end;
     
@@ -50,10 +52,11 @@ md*
         ));
     %end;
     %else %do;
-        %put %sysfunc(cats(ER,ROR:)) type not found: &=type.;
+        %put %sysfunc(cats(ER,ROR:)) not found: &=type.;
         %return;
     %end;
     
+    %if %sysevalf(%superq(res)=,boolean) %then %let res = .;
     %* format result if required, or just return the value;
     %if %sysevalf(%superq(format)=,boolean) %then %do;
         &res.
