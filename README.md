@@ -6,7 +6,7 @@ This is intended for blank, single projects.
 ## Usage:
 * Clone repository
 * Update programs/macros/setup.sas (and other setup*.sas files as necessary for the project)
-* data/misc/define.xmlv2.0.map.xml - an XML map to access define.xml v2.0 data through libname xml engine
+* data/misc/define20map.xml - an XML map to access define.xml v2.0 data through libname xml engine
  
 
 # Playground rules (which are nice to follow, but..):
