@@ -97,6 +97,9 @@ md*
         delete __compressds01;
         run;
     quit;
+    %local nothingtodo;
+    %let nothingtodo = 0;
+    %if &nobs. eq 0 or &nvars. eq 0 %then %let nothingtodo = 1;
 
     %* make a copy if dsin ne dsout.;
     %if &dsin. ne &dsout. %then %do;
@@ -106,7 +109,7 @@ md*
         data _null_;
     %end;
         set &dsin. end=__eof;
-    %if &nobs. eq 0 or %sysevalf(%superq(__vars_to_modify)=,boolean) %then %do;
+    %if &nothingtodo. %then %do;
         %if &silent. ne Y %then %put %sysfunc(cats(NO,TICE:)) nothing else to do.;
     %end;
     %else %do;
@@ -122,14 +125,17 @@ md*
         end;
     
         if __eof then do;
+            drop __t;
+            length __t $32767;
             do __k = 1 to dim(__vars_to_modify);
-                call symputx("__len"||put(__k, 8.-L), put(__lens[__k], 8.));
+                __t = catx(',', __t, quote(vname(__vars_to_modify(__k)))||'n char('||strip(put(__lens[__k], best.))||')');
             end;
+            call symputx('__vars_to_modify', __t);
         end;
     %end;
     run;
     
-    %if &nobs. eq 0 or %sysevalf(%superq(__vars_to_modify)=,boolean) %then %do;
+    %if &nothingtodo. %then %do;
         %if &silent. ne Y %then %put %sysfunc(cats(NO,TICE:)) nothing to do.;
         %return;
     %end;
@@ -137,11 +143,7 @@ md*
     %* Set var length to maximum value lenght*;
     proc sql noprint;
         alter table &dsout.
-            modify
-            %do i = 1 %to &nvars.;
-                %if &i. gt 1 %then ,;
-                %sysfunc(scan(%str(&__vars_to_modify.), &i., %str( ), oq)) character(&&__len&i)
-            %end;
+            modify &__vars_to_modify.;
         ;
     quit;
 
