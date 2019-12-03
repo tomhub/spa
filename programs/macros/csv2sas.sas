@@ -171,12 +171,13 @@ md*
     %compressds(dsin=&dsout.);
     
 %mend csv2sas;
+/** Example call:
 %csv2sas(
     dsout= test
-    ,filein=&g_path_root/data/misc/_wip_test.csv
+    ,filein=&g_path_root./data/misc/_wip_test.csv
     ,datarow=2
     ,varrow=1
-    ,varlabelrow=2   /*row with variable labels*/
-    ,filenameoptions=   /*filename options to use, ex. encoding=utf8*/
+    ,varlabelrow=2
+    ,filenameoptions=
 );
-
+*/
