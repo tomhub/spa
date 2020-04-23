@@ -129,7 +129,7 @@ md*
 
     filename _fcmdrun;
 %mend batchrun;
-
+/** Example call:
 data testcmd;
     length cmd $32767;
     cmd = "@echo off";
@@ -143,3 +143,4 @@ run;
 %batchrun(
     dsin=testcmd
 );
+*/
