@@ -1,5 +1,6 @@
 # exclude WPS project file
 .project
+.metadata/
 
 # exlude test programs
 _wip*.sas
