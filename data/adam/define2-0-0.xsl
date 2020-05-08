@@ -45,10 +45,10 @@
   <xsl:param name="displayCommentsTable" select="0"/>
 
   <!-- Display Prefixes ([Comment], [Method], [Origin]) (0/1)? -->
-  <xsl:param name="displayPrefix" select="0" />
+  <xsl:param name="displayPrefix" select="1" />
 
   <!-- Display Length, DisplayFormat and Significant Digits (0/1)? -->
-  <xsl:param name="displayLengthDFormatSD" select="0" />
+  <xsl:param name="displayLengthDFormatSD" select="1" />
 
   <!-- ********************************************************************************************************* -->
   <!-- File:        define2-0.xsl                                                                                -->
