@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="define2-0-0.xsl"?>
+  <ODM
+    xmlns="http://www.cdisc.org/ns/odm/v1.3"
+    xmlns:def="http://www.cdisc.org/ns/def/v2.0"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:arm="http://www.cdisc.org/ns/arm/v1.0"
+    ODMVersion="1.3.2"
+    FileType="Snapshot"
+    CreationDateTime="2019-11-17T20:18:43"
+    SourceSystem="Visual Define-XML Editor"
+    SourceSystemVersion="1.0.0">
+    <Study OID="SPA.SAMPLE">
+      <GlobalVariables>
+        <StudyName>Sample Adam for spa</StudyName>
+        <StudyDescription>Sample define.xml for spa macro development</StudyDescription>
+        <ProtocolName>No protocol</ProtocolName>
+      </GlobalVariables>
+      <MetaDataVersion
+        OID="MDV.8b9b1ba9-b98e-42c8"
+        def:DefineVersion="2.0.0"
+        def:StandardName="ADaM-IG">
+        <!-- ********************* -->
+        <!-- ItemGroup Definitions -->
+        <!-- ********************* -->
+        <ItemGroupDef
+          OID="IG.72c9fd8c-be69-4bca"
+          Name="ADSL"
+          Repeating="No"
+          IsReferenceData="Yes"
+          SASDatasetName="ADSL"
+          Purpose="Analysis"
+          def:Structure="One record per subject"
+          def:Class="SUBJECT LEVEL ANALYSIS DATASET">
+          <Description>
+            <TranslatedText xml:lang="en">Subject Level Analysis Dataset</TranslatedText>
+          </Description>
+          <ItemRef ItemOID="IT.559b82aa-a3d0-4148" OrderNumber="1" Mandatory="Yes"/>
+          <ItemRef ItemOID="IT.9974b08e-a55b-44d3" OrderNumber="2" Mandatory="Yes" KeySequence="1"/>
+          <ItemRef ItemOID="IT.49f2ff11-9ba7-4abd" OrderNumber="3" Mandatory="Yes"/>
+          <ItemRef ItemOID="IT.dab30c9b-8209-461d" OrderNumber="4" Mandatory="No"/>
+          <ItemRef ItemOID="IT.2557bdc9-a710-4ea4" OrderNumber="5" Mandatory="No"/>
+          <ItemRef ItemOID="IT.d2067e95-ba55-4687" OrderNumber="6" Mandatory="No"/>
+          <ItemRef ItemOID="IT.41339e1f-aab3-4755" OrderNumber="7" Mandatory="No"/>
+          <def:leaf/>
+        </ItemGroupDef>
+        <!-- ******************* -->
+        <!-- ItemDef Definitions -->
+        <!-- ******************* -->
+        <ItemDef OID="IT.2557bdc9-a710-4ea4" Name="RFSTDT" DataType="integer" Length="16" SASFieldName="RFSTDT" def:DisplayFormat="e8601da.">
+          <Description>
+            <TranslatedText xml:lang="en">Reference Start Date (N)</TranslatedText>
+          </Description>
+        </ItemDef>
+        <ItemDef OID="IT.41339e1f-aab3-4755" Name="SAFFL" DataType="text"/>
+        <ItemDef OID="IT.49f2ff11-9ba7-4abd" Name="SUBJID" DataType="text" Length="16" SASFieldName="SUBJID">
+          <Description>
+            <TranslatedText xml:lang="en">Subject ID</TranslatedText>
+          </Description>
+        </ItemDef>
+        <ItemDef OID="IT.559b82aa-a3d0-4148" Name="STUDYID" DataType="text" Length="10" SASFieldName="STUDYID">
+          <Description>
+            <TranslatedText xml:lang="en">Study ID</TranslatedText>
+          </Description>
+        </ItemDef>
+        <ItemDef OID="IT.9974b08e-a55b-44d3" Name="USUBJID" DataType="text" Length="20" SASFieldName="USUBJID">
+          <Description>
+            <TranslatedText xml:lang="en">Unique Subject ID</TranslatedText>
+          </Description>
+        </ItemDef>
+        <ItemDef OID="IT.d2067e95-ba55-4687" Name="AGE" DataType="integer" Length="16" SASFieldName="AGE">
+          <Description>
+            <TranslatedText xml:lang="en">Age</TranslatedText>
+          </Description>
+        </ItemDef>
+        <ItemDef OID="IT.dab30c9b-8209-461d" Name="RFSTDTC" DataType="date" SASFieldName="RFSTDTC">
+          <Description>
+            <TranslatedText xml:lang="en">Reference Start Date/Time</TranslatedText>
+          </Description>
+        </ItemDef>
+      </MetaDataVersion>
+    </Study>
+  </ODM>
