@@ -76,7 +76,9 @@ md*
         %let ext=;
         %let bom_opt=;
         %if %sysevalf(%superq(interpreter)=,boolean) %then %do;
-            %if &sysscpl. eq X64_WIN10PRO %then %do;
+            %if &sysscpl. eq X64_WIN10PRO
+                or &syscpl. eq X64_SRV16
+            %then %do;
                 %let bom_opt = %sysfunc(getoption(bomfile));
                 %if &silent. ne Y %then %do;
                     %put %sysfunc(cats(NO,TICE:)) no INTERPRETER given and this seems to be windows: run commands as batch file.;
@@ -100,20 +102,27 @@ md*
             option nobomfile;
         %end;
         filename _fcmdrun "%sysfunc(pathname(work))/batchrun&ext.";
+        %local _batch_command;
         data _null_;
-            set &dsin.;
+            set &dsin. end=_eof;
             file _fcmdrun lrecl=32767;
             put cmd;
+            if _eof then do;
+                call symputx(
+                    '_batch_command'
+                    ,quote(ifc(not missing("&interpreter."), "&interpreter. ", trimn(' '))||'"'||pathname('work')||'/batchrun'||strip("&ext.")||'" 2>&1', '"')
+                );
+            end;
         run;
         filename _fcmdrun;
-        filename _fcmdrun pipe %sysfunc(quote(&interpreter."%quote(%str(%sysfunc(pathname(work))/batchrun&ext.))" 2>&1));
+        filename _fcmdrun &_batch_command.;
         %if not %sysevalf(%superq(bom_opt)=,boolean) %then %do;
             option &bom_opt.;
         %end;
     %end;
     
     data &dsout.;
-        infile _fcmdrun lrecl=max;
+        infile _fcmdrun lrecl=max; %* maybe 32767 for SAS;
         input;
         %if &silent. ne Y or %upcase(&dsout.) eq _NULL_ %then %do;
             %if &silent. ne Y %then %do;
