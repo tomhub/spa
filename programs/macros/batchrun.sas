@@ -25,7 +25,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Run OS/programs outside SAS, pipe any output back. Submit a single command or 
 submit multiple commands
 md*
-*******(***********************************************************************/
+*******************************************************************************/
 %macro batchrun(
     cmd=        /*command to run, dsin will be ignored: command length could be limited.*/
     ,dsin=      /*if cmd is missing, dsin is expected to have CMD variable with commands to run.*/
