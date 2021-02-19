@@ -25,8 +25,6 @@ This is intended for blank, single projects.
     * When not running in batch, produce all outputs into "work", so that actual outputs aren't modified until the program is batch submitted and log files are saved
 
 # TODO:
-  * Read define.xml to get dataset/variable/codelist metadata ondemand
-  * Shape dataset based on define.xml metadata (dataset label, variable name/label/order/type/display format etc.)
   * Prepare metadata for TLFs (titles/footnotes etc.) and datasets (dependencies?)
   * Prepare python script to output <filename>.md if it contains "*md ... md*;" comments.
   * Log parser..
