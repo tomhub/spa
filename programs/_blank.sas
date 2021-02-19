@@ -30,7 +30,7 @@ md*
 options mautosource sasautos=("macros/" sasautos);
 %setup;
 
-%* If this is WPS, then set prorgam name manually. *;
+%* If this is WPS, then set program name manually. *;
 %let g_pgmname=_blank.sas;
 
 %* program code.;
