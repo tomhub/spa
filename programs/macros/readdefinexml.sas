@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2019 Tomas Demčenko
+Copyright (c) 2019-2021 Tomas Demčenko
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -32,10 +32,13 @@ md*
     ,xmlmap="%sysfunc(pathname(mi))\define20map.xml" /*Full path to define.xml map, also quoted*/
     ,silent=Y   /*if ne Y then more verbose log*/
     ,prefix=_def_   /*prefix to give to define.xml datasets*/
+    ,compressds=Y   /*Y/N: compress datasets after importing (minimize char var lenghts)*/
 );
-    %put &=xmlmap;
+
+    %put %sysfunc(cats(NO,TICE:)) &=xmlmap.;
     %local rc fid xmlcreatedt xmlmodifydt _fid_readDefineXML;
     %let rc = %sysfunc(filename(_fid_readDefineXML, %str(&filename.)));
+
     %if &rc. ne 0 %then %do;
         %put %sysfunc(cats(ER,ROR:)) could not reference: &=filename.;
         %if &silent. ne Y %then %do;
@@ -53,12 +56,13 @@ md*
     %else %do;
         %let libout = &libout..;
     %end;
-    
-    %let fid = %sysfunc(fopen(&_fid_readDefineXML.));
+
+    %let fid = %sysfunc(fopen(&_fid_readDefineXML.,i));
     %if &fid. eq 0 %then %do;
         %put %sysfunc(cats(ER,ROR:)) could not open: &=filename.;
         %if &silent. ne Y %then %do;
-            %put %sysfunc(cats(ER,ROR:)) &=rc. &=sysfilrc.;
+            %put %sysfunc(cats(ER,ROR:)) &=fid. &=sysfilrc. &=_fid_readDefineXML.;
+            %put %sysfunc(cats(ER,ROR:)) &=filename.;
         %end;
         %let rc = %sysfunc(filename(_fid_readDefineXML));
         %return;
@@ -68,14 +72,14 @@ md*
     %let xmlmodifydt = %sysfunc(finfo(&fid, Last Modified));
     
     %if &silent. ne Y %then %do;
-        %put %sysfunc(cats(NO,TICE:)) &filename.:;
+        %put %sysfunc(cats(NO,TICE:)) &=filename.;
         %put %sysfunc(cats(NO,TICE:)) &=xmlcreatedt. &=xmlmodifydt.;
     %end;
     
     %let rc = %sysfunc(fclose(&fid.));
     
     %* access to define.xml;
-    libname _____def xml
+    libname _____def xmlv2
         &filename.
          access=readonly
          xmlmap=&xmlmap.
@@ -104,6 +108,20 @@ md*
             data &libout.&prefix.&dsname.;
                 set _____def.&dsname.;
             run;
+
+            %if &compressds. eq Y %then %do;
+                %compressds(dsin=&libout.&prefix.&dsname.);
+            %end;
+
+            %if %upcase(&dsname.) eq CODELISTS or %upcase(&dsname.) eq CODELISTSENUM %then %do;
+                proc datasets nolist library=%sysfunc(compress(&libout., %str( .)));
+                    modify &prefix.&dsname.;
+                        index create CodeListOID;
+                        index create name;
+                        index create CodeListName;
+                    run;
+                quit;
+            %end;
         %end;
         %let i = %eval(&i. + 1);
     %end;
