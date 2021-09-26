@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2019 Tomas Demčenko
+Copyright (c) 2019-2021 Tomas Demčenko
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -27,7 +27,8 @@ md*
 *******************************************************************************/
 %macro mdtc2dt(
     dtc=        /*Input date/time character value, */
-    ,type=win01 /*win01: accepts "20:04:57 Nov 19 2019" as input */
+    ,type=win01sas  /* accecpts 27Feb2021:12:21:41 */
+        /*win01: accepts "20:04:57 Nov 19 2019" as input */
     ,format=/*Output format*/
 );
     %local res;
@@ -50,6 +51,9 @@ md*
             ,%scan(&dtc., 2, %str(: ))
             ,%scan(&dtc., 3, %str(: ))
         ));
+    %end;
+    %else %if &type. eq win01sas %then %do;
+        %let res = %sysfunc(putn("&dtc."dt, best.));    
     %end;
     %else %do;
         %put %sysfunc(cats(ER,ROR:)) not found: &=type.;
