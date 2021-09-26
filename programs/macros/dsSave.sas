@@ -32,9 +32,12 @@ md*
     ,defineLibname=     /*Opt. defineLocation library name (usually AD or SD. If blank, tries to guess AD or SD based on &domain.)*/
     ,defineFilename=define.xml  /*Req. define.xml filename (could be full path, or just filename. If value contains / or \, pathname("&defineLibname.") is not being used.*/
     ,silent=Y           /*if ne Y then produces additional messages in the log*/
+    ,xpt=Y              /*Y/N: produce xpt ?*/
 );
-    %local failed;
+    %local failed _option_validvarname;
+
     %let failed=0;
+
     %if %sysevalf(%superq(dsin)=,boolean) %then %do;
         %put %sysfunc(cats(ER,ROR:)) DSIN is a required paramater and cannot be empty.;
         %let failed = 1;
@@ -58,59 +61,30 @@ md*
         %put %sysfunc(cats(ER,ROR:)) macro has ended.;
         %goto exit;
     %end;
-    
-    %local pathToDefine;
-    %if %sysfunc(kindexc(%superq(defineFilename), %str(\/))) %then %do;
-        %let pathToDefine = %str(&defineFilename.);
-    %end;
-    %else %if %sysevalf(%superq(defineLibname)=,boolean) %then %do;
-        %* be smart, guess defineLibname value *;
-        %if %length(&domain.) eq 2
-            or %upcase(%substr(&domain., 1, 4)) eq SUPP
-            or %upcase(&domain.) eq RELREC
-        %then %do;
-            %let defineLibname = sd;
-        %end;
-        %else %do;
-            %let defineLibname = ad;
-        %end;
-        %if &silent. ne Y %then %put %sysfunc(cats(NO,TICE:)) assuming define libname: &=defineLibname.;
-    %end;
-    
-    %if %sysevalf(%superq(pathToDefine)=,boolean) %then %do;
-        %let pathToDefine = %sysfunc(pathname(&defineLibname., l))/%str(&defineFilename.);
-    %end;
-    
-    %if &silent. ne Y %then %do;
-        %put %sysfunc(cats(NO,TICE:)) using: &pathToDefine.;
-    %end;
-    
-    filename __fn001 "%str(&pathToDefine.)";
-    %if %sysfunc(fileref(__fn001)) ne 0 %then %do;
-        %put %sysfunc(cats(ER,ROR:)) does not exist: &=pathToDefine.. Check macro parameteres used.;
-        filename __fn001 clear;
-        %goto exit;
-    %end;
-    
-    %* here could possible do a check not to re-read define.xml each time;
-    
-    %* get the metadata from define.xml;
-    %readDefineXML(
-        filename="&defineFileName."
-        ,libout=work
-        ,forceUpdate=Y
-        ,silent=N
-        ,prefix=__ad_
+
+    %local _option_validvarname;
+    %let _option_validvarname = %sysfunc(getoption(validvarname));
+    option validvarname=any;
+
+    %metadata(
+        defineFilename=%str(&defineFilename.)
+        ,domain=&domain.
+        ,defineLibname=&defineLibname.
+        ,silent=&silent.
     );
-    
-    %* flatten define.xml datasets;
-    %prepareMetadata(
-        libin=work
-        ,libout=work
-        ,prefix=__ad_
-        ,outprefix=__ma_
-    );
-    
+
+    %if %sysevalf(%superq(dsout)=,boolean) %then %do;
+        %let dsout = work.&domain.;
+    %end;
+    %else %do;
+        %if not %index(&dsout., %str(.)) %then %do;
+            %let dsout = work.&dsout.;
+        %end;
+    %end;
+
+    %put %sysfunc(cats(NO,TICE:)) producing into: &=dsout.;
+    %* prepare place - need to get date/time var lengths based on output dataset;
+    %compressds(dsin=&dsin., dsout=&dsout.);
 
     %local ds_label dsvars dsattrs;
     %let ds_label = " ";
@@ -118,29 +92,43 @@ md*
     %let dsattrs =;
     data _null_;
         set __ma_variables end=eof;
+        by ordernumber;
         where dsname eq "%upcase(&domain.)";
-        
+
+        retain dsid;
+        if _N_ eq 1 then do;
+            dsid = open("&dsout.", 'is');
+        end;
         length __atr $32767 __vars $32767;
         retain __atr ' ' __vars ' ';
         
-        if datatype not in ('date' 'text' 'integer') then put 'ER' 'ROR: update: dsSave macro: ' datatype=;
+        if datatype not in ('date' 'text' 'integer' 'partialDate' 'float' 'datetime') then put 'ER' 'ROR: update: dsSave macro: ' datatype=;
         
         __vars = catx(' ', __vars, varname);
         
+        if varnum(dsid, strip(varname)) then do;
+            if vartype(dsid, varnum(dsid, strip(varname))) eq 'C' then do;
+                _varlen = varlen(dsid, varnum(dsid, strip(varname)));
+            end;
+            else _varlen = 8;
+        end;
+        else _varlen = 1;
+
         __atr = catx(' ', __atr
             ,'attrib'
             ,varname
             ,ifc(not missing(itemDescriptionEN), 'label='||quote(strip(itemDescriptionEN)), trimn(' '))
-            ,ifc(datatype in ('date' 'text') and not missing(length), 'length=$'||strip(length), trimn(' '))
-            ,ifc(datatype in ('date') and missing(length), 'length=$40', trimn(' '))
-            ,ifc(datatype in ('text') and missing(length), 'length=$200', trimn(' '))
-            ,ifc(not missing(def_displayFormat), 'format='||strip(def_displayFormat), trimn(' '))
+            ,ifc(datatype in ('text' 'date' 'datetime' 'partialDate') and not missing(length), 'length=$'||strip(put(length, best.)), trimn(' '))
+            ,ifc(datatype in ('text' 'date' 'datetime' 'partialDate') and missing(length), 'length=$'||strip(put(_varlen, best.)), trimn(' '))
+            ,ifc(datatype in ('integer' 'float'), 'length=8', trimn(' '))
+            ,ifc(not missing('def:displayFormat'n), 'format='||strip('def:displayFormat'n), trimn(' '))
         );
         __atr = trim(__atr)||';';
         if eof then do;
             call symputx('ds_label', quote(strip(dslabelen)));
             call symputx('dsvars', __vars);
             call symputx('dsattrs', __atr);
+            _rc = close(dsid);
         end;
     run;
     
@@ -158,17 +146,49 @@ md*
                 order by keysequence, ordernumber, varname
         ;
     quit;
-    
-    data &dsout(label=%sysfunc(symget(ds_label)));
+
+
+    data &dsout(label=&ds_label.);
         &dsattrs.
-        set &dsin.;
-        keep &dsvars;
+        set &dsout.;
+        keep &dsvars.;
     run;
     
+    %* restore original option*;
+    option validvarname=&_option_validvarname.;
+
     %if not %sysevalf(%superq(dssort)=,boolean) %then %do;
-        proc sort data=&dsout. out=&dsout.(label=%sysfunc(symget(ds_label)));
+        %* supress sorting attribute from dataset to avoid wa ning in the log*;
+        %* with xport library ;
+        proc sort data=&dsout. out=&dsout.(label=&ds_label. sortedby=_null_);
             by &dssort.;
         run;
+
+        data _null_;
+            set &dsout.;
+            by &dssort.;
+            if not (first.%scan(&dssort., -1, ' ') and last.%scan(&dssort., -1, ' ')) then do;
+                put 'ER' 'ROR: not unique key to sort dataset ex.: '
+                    %local i;
+                    %let i = 1;
+                    %do %while(%scan(&dssort., &i., %str( )) ne %str( ));
+                        %scan(&dssort., &i., %str( ))=
+                        %let i = %eval(&i. + 1);
+                    %end;
+                ;
+                stop;
+            end;
+        run;
+    %end;
+
+    %if &xpt. eq Y %then %do;
+        libname _____xpt xport "%sysfunc(pathname(%scan(&dsout., 1, %str(.))))/&domain..xpt";
+
+        proc copy in=%scan(&dsout., 1, %str(.)) out=_____xpt;
+            select %scan(&dsout., 2, %str(.));
+        run;
+        
+        libname _____xpt clear;
     %end;
     
     %exit:
